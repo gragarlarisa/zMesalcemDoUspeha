@@ -30,11 +30,8 @@
    cd zMesalcemDoUspeha
    ```
 
-2. Ustvarite bazo podatkov MySQL:
-
-   ```sql
-   CREATE DATABASE zMesalcemDoUspeha;
-   ```
+2. Zaženite skripto slovnicnoPravilnaBaza.sql za ustvarjanje baze podatkov. Potem pa odprite projekt_koda (priporočeno v Intellij).
+`
 
 3. Posodobite nastavitve v `application.properties` datoteki:
 
@@ -49,6 +46,7 @@
    mvn clean install
    mvn spring-boot:run
    ```
+5. V brskalniku se bo odprla povezava localhost:8081
 
 ### Navodila za razvijalce
 
