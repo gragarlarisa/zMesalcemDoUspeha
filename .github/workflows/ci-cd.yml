@@ -32,7 +32,7 @@ jobs:
           cache-dependency-path: projekt_koda/pom.xml
 
       - name: Build backend
-        run: ./mvnw clean package -DskipTests
+        run: mvn clean package -DskipTests
 
   test-backend:
     runs-on: ubuntu-latest
@@ -43,19 +43,18 @@ jobs:
         working-directory: projekt_koda
 
     services:
-        mysql:
-          image: mysql:8.0
-          env:
-            MYSQL_ROOT_PASSWORD: test_password_123
-            MYSQL_DATABASE: ReceptiNaDlani
-          ports:
-            - 3306:3306
-          options: >-
-            --health-cmd="mysqladmin ping --silent"
-            --health-interval=10s
-            --health-timeout=5s
-            --health-retries=10
-    
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: test_password_123
+          MYSQL_DATABASE: ReceptiNaDlani
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
 
     steps:
       - name: Checkout code
@@ -79,13 +78,12 @@ jobs:
                 --default-character-set=utf8mb4 \
                 < database/init.sql
 
-
       - name: Run backend tests
         env:
           DB_URL: jdbc:mysql://127.0.0.1:3306/ReceptiNaDlani
           DB_USER: root
           DB_PASSWORD: test_password_123
-        run: ./mvnw test
+        run: mvn test
 
       - name: Start Spring Boot application
         env:
@@ -93,9 +91,8 @@ jobs:
           DB_USER: root
           DB_PASSWORD: test_password_123
         run: |
-          nohup ./mvnw spring-boot:run > spring-boot.log 2>&1 &
+          nohup mvn spring-boot:run > spring-boot.log 2>&1 &
           echo $! > spring-boot.pid
-      
 
       - name: Wait for application
         run: |
