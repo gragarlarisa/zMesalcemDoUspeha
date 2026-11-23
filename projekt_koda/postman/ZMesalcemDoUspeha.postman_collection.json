@@ -1,0 +1,112 @@
+{
+  "info": {
+    "_postman_id": "233d1ad6-add7-4f74-a622-c2e123047e8e",
+    "name": "ZMesalcemDoUspeha - Funkcionalni testi",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "60379084",
+    "_collection_link": "https://go.postman.co/collection/60379084-233d1ad6-add7-4f74-a622-c2e123047e8e?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "FT-01 - Pridobivanje receptov",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "\r\npm.test(\"FT-01: Strežnik vrne HTTP 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"FT-01: Odgovor je seznam receptov\", function () {\r\n    const recepti = pm.response.json();\r\n    pm.expect(recepti).to.be.an(\"array\");\r\n    pm.expect(recepti.length).to.be.above(0);\r\n});\r\n\r\npm.test(\"FT-01: Recepti imajo zahtevane podatke\", function () {\r\n    const recepti = pm.response.json();\r\n\r\n    recepti.forEach(function (recept) {\r\n        pm.expect(recept).to.have.property(\"idRecept\");\r\n        pm.expect(recept).to.have.property(\"naziv\");\r\n        pm.expect(recept).to.have.property(\"steviloOseb\");\r\n        pm.expect(recept.steviloOseb).to.be.above(0);\r\n    });\r\n});\r\n\r\npm.test(\"FT-01: Recept z ID 1 ima pravilno ime\", function () {\r\n    const recepti = pm.response.json();\r\n    const recept = recepti.find(r => r.idRecept === 1);\r\n\r\n    pm.expect(recept).to.exist;\r\n    pm.expect(recept.naziv).to.eql(\r\n        \"Česnove rolice s zeliščnim maslom\"\r\n    );\r\n});\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/recepti",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "recepti"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "FT-02 – Pridobivanje posameznega recepta",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "\r\npm.test(\"FT-02: Strežnik vrne HTTP 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"FT-02: Vrne pravilen recept po ID\", function () {\r\n    const recept = pm.response.json();\r\n\r\n    pm.expect(recept.idRecept).to.eql(1);\r\n    pm.expect(recept.naziv).to.eql(\r\n        \"Česnove rolice s zeliščnim maslom\"\r\n    );\r\n});\r\n\r\npm.test(\"FT-02: Recept vsebuje zahtevane podatke\", function () {\r\n    const recept = pm.response.json();\r\n\r\n    pm.expect(recept).to.have.property(\"idRecept\");\r\n    pm.expect(recept).to.have.property(\"naziv\");\r\n    pm.expect(recept).to.have.property(\"opis\");\r\n    pm.expect(recept).to.have.property(\"sestavine\");\r\n    pm.expect(recept).to.have.property(\"koraki\");\r\n});\r\n\r\npm.test(\"FT-02: Recept vsebuje pravilne sestavine\", function () {\r\n    const recept = pm.response.json();\r\n\r\n    pm.expect(recept.sestavine).to.be.an(\"array\");\r\n    pm.expect(recept.sestavine).to.have.lengthOf(8);\r\n\r\n    pm.expect(recept.sestavine).to.include(\"500 g Moke\");\r\n    pm.expect(recept.sestavine).to.include(\"250 ml Mleka\");\r\n    pm.expect(recept.sestavine).to.include(\"4 stroki Česna\");\r\n});\r\n\r\npm.test(\"FT-02: Recept vsebuje korake priprave\", function () {\r\n    const recept = pm.response.json();\r\n\r\n    pm.expect(recept.koraki).to.be.an(\"array\");\r\n    pm.expect(recept.koraki.length).to.be.above(0);\r\n\r\n    recept.koraki.forEach(function (korak) {\r\n        pm.expect(korak).to.be.a(\"string\");\r\n        pm.expect(korak.trim()).to.not.be.empty;\r\n    });\r\n});\r\n\r\npm.test(\"FT-02: Recept ima veljaven opis\", function () {\r\n    const recept = pm.response.json();\r\n\r\n    pm.expect(recept.opis).to.be.a(\"string\");\r\n    pm.expect(recept.opis.length).to.be.above(20);\r\n});\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/recepti/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "recepti",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "FT-03 – Nakupovalni seznam",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "\r\npm.test(\"FT-03: Streznik vrne HTTP 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"FT-03: Odgovor vsebuje nakupovalni seznam\", function () {\r\n    const podatki = pm.response.json();\r\n\r\n    pm.expect(podatki).to.have.property(\"shoppingList\");\r\n    pm.expect(podatki.shoppingList).to.be.an(\"object\");\r\n});\r\n\r\npm.test(\"FT-03: Seznam vsebuje vseh 8 sestavin\", function () {\r\n    const seznam = pm.response.json().shoppingList;\r\n\r\n    pm.expect(Object.keys(seznam)).to.have.lengthOf(8);\r\n});\r\n\r\npm.test(\"FT-03: Seznam vsebuje zahtevane sestavine\", function () {\r\n    const seznam = pm.response.json().shoppingList;\r\n\r\n    pm.expect(seznam).to.have.property(\"Mleka\");\r\n    pm.expect(seznam).to.have.property(\"Moke\");\r\n    pm.expect(seznam).to.have.property(\"Masla\");\r\n    pm.expect(seznam).to.have.property(\"Česna\");\r\n});\r\n\r\npm.test(\"FT-03: Kolicine ustrezajo trenutni implementaciji\", function () {\r\n    const seznam = pm.response.json().shoppingList;\r\n\r\n    pm.expect(seznam[\"Mleka\"]).to.eql(500);\r\n    pm.expect(seznam[\"Moke\"]).to.eql(1000);\r\n    pm.expect(seznam[\"Masla\"]).to.eql(100);\r\n    pm.expect(seznam[\"Česna\"]).to.eql(8);\r\n});\r\n\r\npm.test(\"FT-03: Vse kolicine so pozitivne\", function () {\r\n    const seznam = pm.response.json().shoppingList;\r\n\r\n    Object.values(seznam).forEach(function (kolicina) {\r\n        pm.expect(kolicina).to.be.a(\"number\");\r\n        pm.expect(kolicina).to.be.above(0);\r\n    });\r\n});\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "\r\n{\r\n  \"receptIds\": [1],\r\n  \"steviloOseb\": 2\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8081/recepti/seznam-nakupov",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "recepti",
+            "seznam-nakupov"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
